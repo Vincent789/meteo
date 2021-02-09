@@ -10,14 +10,12 @@ import Twitter from "./three/TwitterBird.jsx"
 import Trees from "./three/Feuillage.jsx"
 import Text from "./three/Text.jsx"
 import Map from "./three/Map.jsx"
+import Disc from "./three/Disc.jsx"
+import AmericanFlag from "./three/AmericanFlag.jsx"
+
 
 var night = false
 //const hourtest = 12
-
-
-const treecolors = ['#2c9400', '#1b4f08', '#e6b522']
-const cloudcolors = ['#ffffff']
-const raincolors = ['#000000']
 
 function azimuth(){
   //Get current geographic hour
@@ -42,14 +40,12 @@ function azimuth(){
   azimuthNow = (total * (currenthour-daystart))/daylength
 
   //sets night to true if night it is
-  if ( (currenthour > (daylength + daystart)-1)||(currenthour < daylength) ){
+  if ( (currenthour > (daylength + daystart)-1)||(currenthour < daystart) ){
     night = true
-    console.log("NIGHT : "+night)
   }
   else
   {
     night = false
-    console.log("NIGHT : "+night)
   }
 
   //console.log(azimuthNow)
@@ -112,43 +108,6 @@ softShadows();
 var forestNumber = []
 const numbertrees = 300
 const numberclouds = 100
-
-//text
-function TextMesh(props, text, position) {
-    const [hovered, setHover] = useState(false);
-    const mesh = useRef();
-    console.log("PROPS TEXT : "+props.text)
-  
-    // actions to perform in current frame
-    useFrame(() => {
-      //mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
-      //mesh.current.geometry.center();
-    });
-    
-    // load in font
-    const font = new THREE.FontLoader().parse(JSONfont);
-  
-    // configure font mesh
-    const textOptions = {
-      font,
-      size: 100,
-      height: hovered ? 1 : 0
-    };
-    //qqch qui ne se fait pas dans le update !!!!!!!!!!!
-  
-    return (
-      <mesh
-        ref={mesh}
-        onPointerOver={(e) => setHover(true)}
-        onPointerOut={(e) => setHover(false)}
-        position={[-200, -50, -200]}
-      >
-        <textGeometry  attach="geometry" args={[props.text, textOptions]} />
-        <meshBasicMaterial color={hovered ? 'black' : 'white'} />
-      </mesh>
-    );
-  }
-
 
 const Rain = ({ position, color, args, numberrain }) => {
 
@@ -346,7 +305,7 @@ class Home extends Component {
             <OrbitControls />
             <Trees treecolor={this.props.treecolor}/>
             <Clouds color={this.props.cloudscolor} number={this.props.numberclouds}/>
-            <Text location={this.props.location}/>
+            <Text location={this.props.location} night={night}/>
             <Snow
                 color='white'
                 args={[1, 1, 1]}
@@ -357,7 +316,11 @@ class Home extends Component {
                 args={[0.3, 10, 0.3]}
                 numberrain = {this.props.rain}
             />
-            <Map terraincolor={this.props.terraincolor} fieldcolor={this.props.fieldcolor}/>
+            <Map 
+              terraincolor={this.props.terraincolor} 
+              fieldcolor={this.props.fieldcolor}
+              roadcolor={this.props.roadcolor}
+            />
             {night = true &&
               <Stars
                 radius={200} // Radius of the inner sphere (default=100)
@@ -370,6 +333,8 @@ class Home extends Component {
             }
               <Farm />
               <Twitter />
+              <Disc />
+              <AmericanFlag/>
           </Canvas>
         )
     }

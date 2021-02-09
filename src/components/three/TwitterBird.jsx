@@ -1,13 +1,18 @@
 import * as THREE from 'three'
 import React, { useRef, Suspense, Component, useState } from 'react'
-import { useGLTF, useAnimations } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
+import { useFrame } from 'react-three-fiber'
 
 function TwitterBird(props) {
     const groupbird = useRef()
-    const { nodes, materials } = useGLTF('/twitter.glb')
-  
+    const { nodes, materials } = useGLTF('twitter.glb')
+
     const [hovered, setHover] = useState(false)
     const [active, setActive] = useState(false)
+
+    useFrame(() => {
+        groupbird.current.rotation.y = groupbird.current.rotation.y += 0.01;
+    });
   
     return (
       <group ref={groupbird} {...props} dispose={null}>

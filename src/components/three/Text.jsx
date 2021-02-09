@@ -3,15 +3,30 @@ import * as THREE from 'three'
 import { useFrame } from 'react-three-fiber'
 import JSONfont from "../../fonts/Cocogoose.json";
 
-function TextMesh(props, text, position) {
+function TextMesh(props, text, position, night) {
     const [hovered, setHover] = useState(false);
     const mesh = useRef();
     console.log("PROPS TEXT : "+props.text)
-  
+    console.log("PROPS NIGHT : "+props.night)
+    /*
+    let margin = 0;
+    for (let i=0; i < (props.text).length; i++ ){
+
+        margin = margin + 40
+    }
+    console.log("Margin "+margin)*/
+
+    let color
+    if ( props.night == true ){
+        color = '#ffffff'
+    }
+    else{
+        color = '#37edcc'
+    }
     // actions to perform in current frame
     useFrame(() => {
       //mesh.current.rotation.x = mesh.current.rotation.y += 0.01;
-      //mesh.current.geometry.center();
+      mesh.current.geometry.center();
     });
     
     // load in font
@@ -21,7 +36,7 @@ function TextMesh(props, text, position) {
     const textOptions = {
       font,
       size: 100,
-      height: hovered ? 1 : 0
+      height: hovered ? 0 : 0
     };
     //qqch qui ne se fait pas dans le update !!!!!!!!!!!
   
@@ -30,10 +45,10 @@ function TextMesh(props, text, position) {
         ref={mesh}
         onPointerOver={(e) => setHover(true)}
         onPointerOut={(e) => setHover(false)}
-        position={[-200, -50, -200]}
+        position={[0, 0, -300]}
       >
         <textGeometry  attach="geometry" args={[props.text, textOptions]} />
-        <meshBasicMaterial color={hovered ? 'black' : 'white'} />
+        <meshBasicMaterial color={hovered ? color : color} />
       </mesh>
     );
 }
@@ -44,7 +59,7 @@ class Text extends Component {
     }
     render(){
         return(
-            <TextMesh text={this.props.location}/>
+            <TextMesh text={this.props.location} night={this.props.night}/>
         )
     }
 }

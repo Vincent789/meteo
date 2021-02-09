@@ -52,7 +52,7 @@ class Trees extends Component {
     }
     render(){
         return(
-            <Feuillage numbertrees={100} color={this.props.treecolor}/>
+            <Feuillage numbertrees={300} color={this.props.treecolor}/>
         )
     }
 }

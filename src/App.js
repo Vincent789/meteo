@@ -19,7 +19,8 @@ class App extends Component {
       rain: 0,
       state: 0,
       numberclouds: 0,
-      location: 'LYON'
+      location: 'LYON',
+      roadcolor: '#544c3e'
     }
 
     this.handleButtonSnow = this.handleButtonSnow.bind(this)
@@ -34,7 +35,8 @@ class App extends Component {
         treecolor: '#ffffff',
         state: 1,
         numberclouds: 50,
-        cloudscolor: '#ffffff'
+        cloudscolor: '#ffffff',
+        roadcolor: '#ffffff'
       })
     }
     else
@@ -45,7 +47,8 @@ class App extends Component {
         fieldcolor: '#fcc305',
         treecolor: '#006335',
         numberclouds: 0,
-        cloudscolor: '#ffffff'
+        cloudscolor: '#ffffff',
+        roadcolor: '#544c3e'
       })
     }
   }
@@ -91,6 +94,7 @@ class App extends Component {
             numberclouds={this.state.numberclouds}
             cloudscolor={this.state.cloudcolors}
             location={this.state.location}
+            roadcolor={this.state.roadcolor}
           />
         </div>
       </Provider>

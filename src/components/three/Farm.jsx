@@ -7,7 +7,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 
 function Hut(props) {
     const group = useRef()
-    const { nodes, materials, animations } = useGLTF('/scene.gltf')
+    const { nodes, materials, animations } = useGLTF('scene.gltf')
     const { actions } = useAnimations(animations, group)
     return (
       <group ref={group} {...props} dispose={null}>
@@ -58,7 +58,7 @@ class Farm extends Component {
     render(){
         return(
           <Suspense fallback={null}>
-            <Hut scale={[0.02, 0.02, 0.02]} position={[2, 5, -20]}/>
+            <Hut scale={[0.03, 0.03, 0.03]} position={[5.5, 5, -20]}/>
           </Suspense>
         )
     }
