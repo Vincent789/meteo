@@ -1,15 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import ThreedBackground from './ThreedBackground';
 import reportWebVitals from './reportWebVitals';
-import ClickableCube from './ClickableCube';
+import App from './App'
+import { ActionCreators } from 'redux-devtools';
 
 
+//STORE : Globalized state
+/*
+//ACTION INCREMENT
+const increment = () => {
+  return {
+    type: 'INCREMENT'
+  }
+}
+//DECREMENT
+const decrement = () => {
+  return {
+    type: 'DECREMENT'
+  }
+}
+//REDUCER
+const counter = ( state = 0, action ) =>{
+  switch(action.type){
+    case "INCREMENT":
+      return state+10
+    case "DECREMENT":
+      return state-10
+  }
+} 
+
+let store = createStore(counter)
+
+//display in console
+store.subscribe(() => console.log(store.getState()))
+
+store.dispatch(increment())
+store.dispatch(decrement())
+*/
 ReactDOM.render(
-  <React.StrictMode>
-    <ClickableCube />
-  </React.StrictMode>,
+    <App />,
   document.getElementById('root')
 );
 //Other components     <ThreedBackground />
