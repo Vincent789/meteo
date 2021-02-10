@@ -3,10 +3,13 @@ import { useGLTF } from "@react-three/drei";
 import { useFrame } from 'react-three-fiber'
 import * as THREE from 'three'
 //credit 3D https://sketchfab.com/ilyafom1
+//credits https://www.youtube.com/watch?v=5ZCtTdwc4GI
+
+const playstatus = 0;
 
 function play(){
-  var audio = new Audio('musictest.mp3');
-  audio.play();
+    var audio = new Audio('musictest.mp3');
+    audio.play();
 }
 
 function Vinyl(props) {
@@ -27,7 +30,7 @@ function Vinyl(props) {
     >
       <group rotation={[-Math.PI / 2, 0, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}
-        scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
+        scale={active ? [1.25, 1.25, 1.25] : [1, 1, 1]}
         onPointerOver={(e) => setActive(!active)}
         onPointerOut={(e) => setActive(!active)}
         onClick={(e) => play()}

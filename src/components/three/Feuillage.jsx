@@ -20,8 +20,6 @@ function Feuillage(props, color, numbertrees) {
         treepositions.push(object)
     }
 
-    
-    console.log("TREEPOSITIONS :"+treepositions)
     const grouptrees = useRef();
 
     //Basic expand state
@@ -43,8 +41,6 @@ function Feuillage(props, color, numbertrees) {
       </group>
     );
 }
-
-useGLTF.preload('/Cottage.glb')
     
 class Trees extends Component {
     constructor(props){

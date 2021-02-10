@@ -5,7 +5,7 @@ import { useGLTF } from "@react-three/drei";
 
 function Flag(props) {
   const group = useRef()
-  const { nodes, materials } = useGLTF('/Americanflag.glb')
+  const { nodes, materials } = useGLTF('Americanflag.glb')
   return (
     <group ref={group} {...props} dispose={null}>
       <mesh material={materials.FlagBrown} geometry={nodes.Post_Cylinder.geometry} rotation={[Math.PI / 2, 0, 0]} />

@@ -1,9 +1,11 @@
 import React, { useRef, useState, Component } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from 'react-three-fiber'
-import { softShadows, Sky, Stars, OrbitControls } from "@react-three/drei";
+import { softShadows, Sky, Stars, OrbitControls } from "@react-three/drei"
 import { useSpring, a } from 'react-spring/three'
-import JSONfont from "../fonts/Cocogoose.json";
+import JSONfont from "../fonts/Cocogoose.json"
+import axios from 'axios'
+
 //JSX
 import Farm from "./three/Farm.jsx"
 import Twitter from "./three/TwitterBird.jsx"
@@ -12,7 +14,6 @@ import Text from "./three/Text.jsx"
 import Map from "./three/Map.jsx"
 import Disc from "./three/Disc.jsx"
 import AmericanFlag from "./three/AmericanFlag.jsx"
-
 
 var night = false
 //const hourtest = 12
@@ -53,7 +54,8 @@ function azimuth(){
   return azimuthNow
 }
 
-function inclination(){
+function inclination(props){
+  console.log("DATA :"+props)
   //Get current geographic hour
   var d = new Date();
   //get current hour
@@ -262,6 +264,14 @@ function Clouds(props, color, number) {
     </group>
   );
 }
+/*
+function Dolly() {
+  // This one makes the camera move in and out
+  useFrame(({ camera }) => {
+    camera.position.z = 200
+  })
+  return null
+}*/
 
 function Lights() {
   return (
@@ -290,19 +300,41 @@ class Home extends Component {
     constructor(props){
         super(props)
     }
+    state = {
+      persons: []
+    }
+    async componentDidMount() {
+
+      var body = JSON.stringify({"city":"lyon"});
+      // https://api.openweathermap.org/data/2.5/weather?q=toronto&appid=8d23c2c814d8bc6ea19d77c49f3cc746
+      var config = {
+        method: 'get',
+        url: 'http://localhost:8087/weather',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : body
+      };
+      await axios(config).then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
     render(){
         return(
             <Canvas style={{height:"100vh",width:"100vw",backgroundColor:"#abfff5"}}>
             <Sky
               distance={45000} // Camera distance (default=450000)
-              inclination={inclination()} // Sun elevation angle from 0 to 1 (default=0)
+              inclination={inclination(this.state.meteo)} // Sun elevation angle from 0 to 1 (default=0)
               azimuth={azimuth()} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
               turbidity={20}
               rayleigh={4}
               exposure={1000}
             />
             <Lights />
-            <OrbitControls />
+            <OrbitControls minDistance={[100]} maxDistance={[300]}/>
             <Trees treecolor={this.props.treecolor}/>
             <Clouds color={this.props.cloudscolor} number={this.props.numberclouds}/>
             <Text location={this.props.location} night={night}/>
