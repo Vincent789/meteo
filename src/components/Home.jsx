@@ -18,17 +18,19 @@ import AmericanFlag from "./three/AmericanFlag.jsx"
 var night = false
 //const hourtest = 12
 
-function azimuth(){
+function azimuth(daystart, daylength){
+  console.log("DATA AZIMUTH :"+daystart+" "+daylength)
   //Get current geographic hour
   var d = new Date();
   //get current hour
   var currenthour = d.getHours();
+
+  console.log("TYPEOF : " + typeof daystart);
   //console.log("CurrentHour :"+currenthour)
   //get by API
-  let daystart = 6; //heure de début de journée
-  let daylength = Math.round(12) //longueur du jour
-
-  //currenthour = hourtest
+  daystart = Number(daystart)
+  daylength = Number(daylength)
+  currenthour = 19
 
   //Ex : Valeur de départ Azimuth: 0.1171
   //Ex : Valeur de fin Azimuth: 0.3882
@@ -39,6 +41,8 @@ function azimuth(){
   let azimuthNow
 
   azimuthNow = (total * (currenthour-daystart))/daylength
+
+  console.log("AZIMUT : "+azimuthNow)
 
   //sets night to true if night it is
   if ( (currenthour > (daylength + daystart)-1)||(currenthour < daystart) ){
@@ -54,19 +58,21 @@ function azimuth(){
   return azimuthNow
 }
 
-function inclination(props){
-  console.log("DATA :"+props)
+function inclination(daystart, daylength){
   //Get current geographic hour
   var d = new Date();
   //get current hour
   var currenthour = d.getHours();
   //console.log(n)
+  daystart = Number(daystart)
+  daylength = Number(daylength)
+  currenthour = 19 
+  console.log("DATA INCLINATION :"+daystart+" "+daylength)
 
   //get by API
-  let daystart = 6; //heure de début de journée
-  let daylength = Math.round(12) //longueur du jour
   let noon = daylength/2 + daystart //midi = la moitié de la journée de soleil + l'heure de démarrage
   //soit pour un jour d'ensoleillement de 11h = 11/2 + 6 = 11.5
+  console.log("NOON "+noon)
 
   //currenthour = hourtest
 
@@ -78,6 +84,8 @@ function inclination(props){
   //déclaration de la valeur courante
   let inclinationNow
 
+  
+
   if (currenthour < noon) {
     inclinationNow = (currenthour - daystart) * total / (daylength/2);
   }
@@ -87,8 +95,10 @@ function inclination(props){
     inclinationNow = (diffHour - daystart) * total / (daylength/2);
   }
 
+  console.log("INCLINATION : "+inclinationNow)
+
   //console.log("INCLINATION NOW: "+inclinationNow + 0.50)
-  return inclinationNow + 0.50
+  return inclinationNow + 0.5
   /*
   azimuth
   0.1171
@@ -228,7 +238,6 @@ const Snow = ({ position, color, args, numbersnow }) => {
 };
 
 function Clouds(props, color, number) {
-
   var cloudpositions = []
   for (let i = 0; i < props.number; i++) {
       let cloudNewPosX = getRandomInt(45);
@@ -299,36 +308,49 @@ function getRandomInt(max) {
 class Home extends Component {
     constructor(props){
         super(props)
-    }
-    state = {
-      persons: []
+        this.state = {
+          rise: null,
+          set: null,
+          daylight: null
+        }
     }
     async componentDidMount() {
-
-      var body = JSON.stringify({"city":"lyon"});
+      var data = JSON.stringify({"city":"lyon"});
       // https://api.openweathermap.org/data/2.5/weather?q=toronto&appid=8d23c2c814d8bc6ea19d77c49f3cc746
       var config = {
-        method: 'get',
+        method: 'post',
         url: 'http://localhost:8087/weather',
         headers: { 
           'Content-Type': 'application/json'
         },
-        data : body
+        data : data
       };
+
+      let meteodata
+
       await axios(config).then(function (response) {
-        console.log(JSON.stringify(response.data));
+        const meteo = response.data
+        meteodata = meteo
       })
       .catch(function (error) {
         console.log(error);
       });
+
+      console.log("METEODATA : "+meteodata)
+
+      this.setState({
+        rise: JSON.stringify(meteodata.sun.rise),
+        set: JSON.stringify(meteodata.sun.set),
+        daylight: JSON.stringify(meteodata.sun.daylight)
+      })
     }
     render(){
         return(
             <Canvas style={{height:"100vh",width:"100vw",backgroundColor:"#abfff5"}}>
             <Sky
               distance={45000} // Camera distance (default=450000)
-              inclination={inclination(this.state.meteo)} // Sun elevation angle from 0 to 1 (default=0)
-              azimuth={azimuth()} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
+              inclination={inclination(this.state.rise, this.state.daylight)} // Sun elevation angle from 0 to 1 (default=0)
+              azimuth={azimuth(this.state.rise, this.state.daylight)} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
               turbidity={20}
               rayleigh={4}
               exposure={1000}
