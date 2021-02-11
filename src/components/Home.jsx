@@ -18,8 +18,9 @@ import AmericanFlag from "./three/AmericanFlag.jsx"
 var night = false
 //const hourtest = 12
 
-function azimuth(daystart, daylength){
+function azimuth(daystart, daylength, town){
   console.log("DATA AZIMUTH :"+daystart+" "+daylength)
+  console.log("TOWN : "+town)
   //Get current geographic hour
   var d = new Date();
   //get current hour
@@ -30,7 +31,6 @@ function azimuth(daystart, daylength){
   //get by API
   daystart = Number(daystart)
   daylength = Number(daylength)
-  currenthour = 19
 
   //Ex : Valeur de départ Azimuth: 0.1171
   //Ex : Valeur de fin Azimuth: 0.3882
@@ -66,7 +66,7 @@ function inclination(daystart, daylength){
   //console.log(n)
   daystart = Number(daystart)
   daylength = Number(daylength)
-  currenthour = 19 
+
   console.log("DATA INCLINATION :"+daystart+" "+daylength)
 
   //get by API
@@ -311,11 +311,13 @@ class Home extends Component {
         this.state = {
           rise: null,
           set: null,
-          daylight: null
+          daylight: null,
+          numberclouds: null,
+          temperature: null
         }
     }
     async componentDidMount() {
-      var data = JSON.stringify({"city":"lyon"});
+      var data = JSON.stringify({"city":this.props.town});
       // https://api.openweathermap.org/data/2.5/weather?q=toronto&appid=8d23c2c814d8bc6ea19d77c49f3cc746
       var config = {
         method: 'post',
@@ -341,8 +343,14 @@ class Home extends Component {
       this.setState({
         rise: JSON.stringify(meteodata.sun.rise),
         set: JSON.stringify(meteodata.sun.set),
-        daylight: JSON.stringify(meteodata.sun.daylight)
+        daylight: JSON.stringify(meteodata.sun.daylight),
+        numberclouds: Number(JSON.stringify(meteodata.weather.clouds.all)),
+        temperature: String((Number(JSON.stringify(meteodata.weather.main.temp))-273.15).toFixed(2))
       })
+    }
+    homeUppercase(val){
+      val = val.toUpperCase()
+      return val
     }
     render(){
         return(
@@ -350,7 +358,7 @@ class Home extends Component {
             <Sky
               distance={45000} // Camera distance (default=450000)
               inclination={inclination(this.state.rise, this.state.daylight)} // Sun elevation angle from 0 to 1 (default=0)
-              azimuth={azimuth(this.state.rise, this.state.daylight)} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
+              azimuth={azimuth(this.state.rise, this.state.daylight, this.props.town)} // Sun rotation around the Y axis from 0 to 1 (default=0.25)
               turbidity={20}
               rayleigh={4}
               exposure={1000}
@@ -358,8 +366,11 @@ class Home extends Component {
             <Lights />
             <OrbitControls minDistance={[100]} maxDistance={[300]}/>
             <Trees treecolor={this.props.treecolor}/>
-            <Clouds color={this.props.cloudscolor} number={this.props.numberclouds}/>
-            <Text location={this.props.location} night={night}/>
+            <Clouds color={this.props.cloudscolor} number={this.state.numberclouds}/>
+            <Text 
+              location={this.homeUppercase(this.props.town)} night={night}
+              temperature={this.state.temperature + " °"}
+            />
             <Snow
                 color='white'
                 args={[1, 1, 1]}

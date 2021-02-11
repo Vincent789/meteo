@@ -95,6 +95,7 @@ class App extends Component {
             cloudscolor={this.state.cloudcolors}
             location={this.state.location}
             roadcolor={this.state.roadcolor}
+            town={'les estables'}
           />
         </div>
       </Provider>
